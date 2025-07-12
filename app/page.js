@@ -13,10 +13,10 @@ export default function Home() {
           <div className="">A <span className="font-bold text-blue-400">Computer Engineer</span>. I engineer meaningful solutions, transforming complex challenges into elegant, impactful code.</div>
           <div className="flex justify-evenly my-3">
             <div className="my-2 bg-blue-500 rounded-full p-2">
-              <Link href="/">Know more</Link>
+              <Link href="/about">Know more</Link>
             </div>
             <div className="my-2 bg-blue-500 rounded-full p-2">
-              <Link href="/">Contact me</Link>
+              <Link href="/contact">Contact me</Link>
             </div>
 
           </div>
