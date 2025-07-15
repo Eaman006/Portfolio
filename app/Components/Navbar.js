@@ -16,9 +16,11 @@ const Navbar = () => {
       </div>
       <div className='flex gap-5'>
         <Link href="/" className={`${getActiveClass("/")}`}>Home</Link>
-        <Link href="/services" className={`${getActiveClass("/services")}`}>Services</Link>
+        <Link href="/project" className={`${getActiveClass("/project")}`}>Project</Link>
         <Link href="/about" className={`${getActiveClass("/about")}`}>About</Link>
         <Link href="/contact" className={`${getActiveClass("/contact")}`}>Contact me</Link>
+        <Link href="/services" className={`${getActiveClass("/services")}`}>Services</Link>
+        
         
       </div>
 
