@@ -64,6 +64,18 @@ const page = () => {
         </div>
         <div>
           <div className='m-2 p-2 font-bold text-xl'>Soft Skills</div>
+          <div>
+            <Image src="/leader.png" width={50} height={50} alt='leader'></Image>
+            <div>Leadership</div>
+          </div>
+          <div>
+            <Image src="/present.png" width={50} height={50} alt='present'></Image>
+            <div>Presentation</div>
+          </div>
+          <div>
+            <Image src="/analytic.png" width={50} height={50} alt='present'></Image>
+            <div>Analytical Thinking</div>
+          </div>
         </div>
       </div>
 
