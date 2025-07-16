@@ -5,9 +5,13 @@ import { usePathname } from 'next/navigation'
 
 const Navbar = () => {
   const pathname = usePathname();
-  const getActiveClass =(path)=>{
-    return pathname === path? 'text-blue-500':'hover:text-blue-500';
-  }
+  const getActiveClass = (path) => {
+    // Special case for root path to avoid '/' matching everything
+    if (path === "/") {
+      return pathname === "/" ? "text-blue-500" : "hover:text-blue-500";
+    }
+    return pathname.startsWith(path) ? "text-blue-500" : "hover:text-blue-500";
+  };
   return (
     <div className='p-3 flex justify-between'>
       <div className='font-bold text-3xl flex items-center'>
