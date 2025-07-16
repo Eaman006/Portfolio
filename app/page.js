@@ -12,12 +12,12 @@ export default function Home() {
         <div className="p-2 border-2 rounded-xl text-xl my-5 bg-black border-blue-400 w-3/4">
           <div className="">A <span className="font-bold text-blue-400">Computer Engineer</span>. I engineer meaningful solutions, transforming complex challenges into elegant, impactful code.</div>
           <div className="flex justify-evenly my-3">
-            <div className="my-2 bg-blue-500 rounded-full p-2">
-              <Link href="/about">Know more</Link>
-            </div>
-            <div className="my-2 bg-blue-500 rounded-full p-2">
-              <Link href="/contact">Contact me</Link>
-            </div>
+            <Link href="/about" className="my-2 bg-gradient-to-b from-sky-400 to-blue-600 hover:active:to-white hover:to-blue-400 rounded-full p-2">
+              <div className="text-lg font-bold">Know more</div>
+            </Link>
+            <Link href="/contact" className="my-2 bg-gradient-to-b from-gray-800 border-white border hover:active:to-white hover:from-gray-600 rounded-full p-2">
+              <div className="text-lg font-bold">Contact me</div>
+            </Link>
 
           </div>
         </div>
