@@ -13,10 +13,10 @@ const page = () => {
           <div className='text-lg my-2'>Contact No.(optional)</div>
           <input className='bg-[#000000a2] rounded-lg w-2/3 h-10 px-2' type="text" placeholder='Enter your Contact number' />
           <div className='text-lg my-2'>Message</div>
-          <input className='bg-[#000000a2] rounded-lg w-2/3 h-20 px-2' type="text" placeholder='Enter your Message' />
+          <textarea className='bg-[#000000a2] rounded-lg w-2/3 h-20 px-2' type="text" placeholder='Enter your Message' />
           <div className='flex gap-5 m-2 p-2'>
             <button className='bg-blue-600 p-3 font-bold rounded-xl'>Submit</button>
-            <button className='bg-red-600 p-3 font-bold rounded-xl'>Reset</button>
+            <button  className='bg-red-600 p-3 font-bold rounded-xl'>Reset</button>
           </div>
 
         </form>
