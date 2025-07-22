@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FaGithub } from "react-icons/fa";
+import { IoGlobe } from "react-icons/io5";
 
 const page = () => {
   return (
@@ -18,8 +19,13 @@ const page = () => {
             <li>🗺️ Dynamic Floor Maps – Interactive SVG-based maps for easy navigation.</li>
             <li>📡 REST API Integration – Fetches real-time navigation paths from the backend.</li>
           </ul>
+          <div className='flex justify-center'>
           <div className='m-2'>
-            <Link href="https://github.com/Eaman006/Campus-Navigator.git" className='bg-blue-600 p-2 flex w-1/3 rounded-lg'><span className='m-1'><FaGithub /></span>Github</Link>
+            <Link href="https://github.com/Eaman006/Campus-Navigator.git" className='bg-blue-600 p-2 flex rounded-lg'><span className='m-1'><FaGithub /></span>Github</Link>
+          </div>
+          <div className='m-2'>
+            <Link href="https://campus-navigator-five.vercel.app/" className='bg-red-600 p-2 flex rounded-lg'><IoGlobe className='my-1' />Website</Link>
+          </div>
           </div>
         
         </div>
