@@ -5,7 +5,7 @@ const page = () => {
   return (
     <div className='bg-gradient-to-b from-gray-800 w-full'>
       <div>
-        <div className='text-2xl m-2 p-2 text-sky-400 font-bold'>Educational Qualifications</div>
+        <div className='text-2xl m-2 p-2 text-sky-400 font-bold'>Educational Qualification</div>
         <div className='m-2 p-2'>
           <div className='text-xl font-bold'>B.Tech in Computer Science and Engineering</div>
           <div className='flex gap-2'>
