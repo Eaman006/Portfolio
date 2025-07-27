@@ -33,7 +33,7 @@ const page = () => {
         </div>
         <div className='m-2 p-2 w-sm bg-[#00000073] rounded-xl flex-shrink-0'>
           <div className='m-2 p-2'>
-            <div className='font-bold text-xl'>Campus Navigator</div>
+            <div className='font-bold text-xl'>Url Flix</div>
             <div className='m-2'><Image src="/campus1.png" width={300} height={400} alt='campus'></Image></div>
             <div className='m-2 text-lg font-bold'>Features</div>
             <ul className='m-2'>
@@ -44,10 +44,10 @@ const page = () => {
             </ul>
             <div className='flex justify-center'>
               <div className='m-2'>
-                <Link href="https://github.com/Eaman006/Campus-Navigator.git" className='bg-blue-600 p-2 flex rounded-lg'><span className='m-1'><FaGithub /></span>Github</Link>
+                <Link href="https://github.com/Eaman006/URLfix.git" className='bg-blue-600 p-2 flex rounded-lg'><span className='m-1'><FaGithub /></span>Github</Link>
               </div>
               <div className='m-2'>
-                <Link href="https://campus-navigator-five.vercel.app/" className='bg-red-600 p-2 flex rounded-lg'><IoGlobe className='my-1' />Website</Link>
+                <Link href="https://ur-lfix.vercel.app" className='bg-red-600 p-2 flex rounded-lg'><IoGlobe className='my-1' />Website</Link>
               </div>
             </div>
 
