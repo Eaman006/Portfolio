@@ -34,15 +34,13 @@ const page = () => {
         <div className='m-2 p-2 w-sm bg-[#00000073] rounded-xl flex-shrink-0'>
           <div className='m-2 p-2'>
             <div className='font-bold text-xl'>Url Flix</div>
-            <div className='m-2'><Image src="/campus1.png" width={300} height={400} alt='campus'></Image></div>
+            <div className='m-2'><Image src="/url.png" width={300} height={400} alt='campus'></Image></div>
             <div className='m-2 text-lg font-bold'>Features</div>
-            <ul className='m-2'>
-              <li>🔍 Search for Directions – Get the best path between buildings and rooms.</li>
-              <li>🎙️ Voice-Based Navigation – Speak your query instead of typing.</li>
-              <li>🗺️ Dynamic Floor Maps – Interactive SVG-based maps for easy navigation.</li>
-              <li>📡 REST API Integration – Fetches real-time navigation paths from the backend.</li>
+            <ul className='m-2 h-51'>
+              <li>🔗Make short Url for free</li>
+              <li>🛜No signup Required</li>
             </ul>
-            <div className='flex justify-center'>
+            <div className='flex justify-center bottom-5'>
               <div className='m-2'>
                 <Link href="https://github.com/Eaman006/URLfix.git" className='bg-blue-600 p-2 flex rounded-lg'><span className='m-1'><FaGithub /></span>Github</Link>
               </div>
