@@ -56,7 +56,7 @@ const Loader = ({ children }) => {
     const loadAllMedia = async () => {
       // Function to get all media elements
       const getAllMedia = () => {
-        const images = document.querySelectorAll('img');
+        const images = document.querySelectorAll('Image');
         const videos = document.querySelectorAll('video');
         const iframes = document.querySelectorAll('iframe');
         const audio = document.querySelectorAll('audio');
