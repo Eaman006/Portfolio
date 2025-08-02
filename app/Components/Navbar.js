@@ -30,7 +30,7 @@ const Navbar = () => {
   };
   return (
     <div className='p-3 flex justify-between'>
-      <div className='font-bold text-3xl flex items-center'>
+      <Link href="/" className='font-bold text-3xl flex items-center'>
         <div className='text-sky-300'>Eaman |</div>
         <div
           key={title}
@@ -38,7 +38,7 @@ const Navbar = () => {
         >
           {title}
         </div>
-      </div>
+      </Link>
       <div className='flex gap-5'>
         <Link href="/" className={`${getActiveClass("/")} flex gap-0.5`}><span className='m-1'><IoMdHome /></span>Home</Link>
         <Link href="/project" className={`${getActiveClass("/project")} flex gap-0.5`}><span className='m-1'><RiComputerFill /></span>Project</Link>

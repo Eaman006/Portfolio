@@ -14,33 +14,68 @@ const Loader = ({ children }) => {
 
   // Check if Next.js is compiling (development mode)
   const checkCompilationStatus = () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
       // Check for Next.js compilation indicators
-      const isNextCompiling = document.querySelector('[data-nextjs-router-state]')?.getAttribute('data-nextjs-router-state') === 'loading' ||
-                             document.querySelector('[data-nextjs-router-state]')?.getAttribute('data-nextjs-router-state') === 'compiling' ||
-                             document.querySelector('[data-nextjs-router-state]')?.getAttribute('data-nextjs-router-state') === 'updating' ||
-                             window.location.search.includes('_next') ||
-                             document.querySelector('[data-nextjs-router-state]')?.getAttribute('data-nextjs-router-state') === 'stale';
+      const routerState = document.querySelector('[data-nextjs-router-state]')?.getAttribute('data-nextjs-router-state');
+      const hasNextInUrl = window.location.search.includes('_next') || window.location.search.includes('__next');
+      const hasNextInPath = window.location.pathname.includes('_next') || window.location.pathname.includes('__next');
       
-      if (isNextCompiling) {
+      console.log('Loader: Checking compilation status:', { routerState, hasNextInUrl, hasNextInPath });
+      
+      if (routerState === 'loading' || routerState === 'compiling' || routerState === 'updating' || routerState === 'stale' || hasNextInUrl || hasNextInPath) {
+        console.log('Loader: Compilation detected!');
         setIsCompiling(true);
-        setLoadingStage('Next.js is compiling...');
-        return true;
-      }
-      
-      // Check for hot reload indicators
-      const isHotReloading = window.location.search.includes('_next') || 
-                            document.querySelector('[data-nextjs-router-state]')?.getAttribute('data-nextjs-router-state') === 'loading' ||
-                            document.querySelector('[data-nextjs-router-state]')?.getAttribute('data-nextjs-router-state') === 'updating';
-      
-      if (isHotReloading) {
-        setIsCompiling(true);
-        setLoadingStage('Hot reloading...');
+        setIsLoading(true);
+        setLoadingStage(`Next.js is ${routerState || 'compiling'}...`);
         return true;
       }
     }
     return false;
   };
+
+  // Force show loader during compilation
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      const forceShowLoader = () => {
+        console.log('Loader: Force showing loader for compilation');
+        setIsLoading(true);
+        setIsCompiling(true);
+        setLoadingStage('Next.js is compiling...');
+        setLoadingProgress(0);
+      };
+
+      // Check immediately
+      if (checkCompilationStatus()) {
+        forceShowLoader();
+      }
+
+      // Set up interval to check for compilation
+      const compilationCheckInterval = setInterval(() => {
+        if (checkCompilationStatus()) {
+          forceShowLoader();
+        }
+      }, 50); // Check more frequently
+
+      // Also listen for URL changes that might indicate compilation
+      const handleUrlChange = () => {
+        if (window.location.search.includes('_next') || window.location.pathname.includes('_next')) {
+          console.log('Loader: URL change detected, showing compilation loader');
+          forceShowLoader();
+        }
+      };
+
+      window.addEventListener('popstate', handleUrlChange);
+      window.addEventListener('pushstate', handleUrlChange);
+      window.addEventListener('replacestate', handleUrlChange);
+
+      return () => {
+        clearInterval(compilationCheckInterval);
+        window.removeEventListener('popstate', handleUrlChange);
+        window.removeEventListener('pushstate', handleUrlChange);
+        window.removeEventListener('replacestate', handleUrlChange);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     console.log(`Loader: Route changed to ${pathname}`);
@@ -56,7 +91,9 @@ const Loader = ({ children }) => {
     const loadAllMedia = async () => {
       // Function to get all media elements
       const getAllMedia = () => {
-        const images = document.querySelectorAll('Image');
+        // Next.js Image components render as img tags with specific classes
+        const nextImages = document.querySelectorAll('img[data-nimg], img[data-nextjs-image]');
+        const regularImages = document.querySelectorAll('img:not([data-nimg]):not([data-nextjs-image])');
         const videos = document.querySelectorAll('video');
         const iframes = document.querySelectorAll('iframe');
         const audio = document.querySelectorAll('audio');
@@ -69,9 +106,11 @@ const Loader = ({ children }) => {
           return bgImage && bgImage !== 'none' && bgImage !== 'initial' && bgImage !== 'inherit';
         });
         
+        console.log(`Found ${nextImages.length} Next.js Image components`);
+        console.log(`Found ${regularImages.length} regular img tags`);
         console.log(`Found ${bgImageElements.length} elements with background images`);
         
-        return [...images, ...videos, ...iframes, ...audio, ...bgImageElements];
+        return [...nextImages, ...regularImages, ...videos, ...iframes, ...audio, ...bgImageElements];
       };
 
       // Initial check
@@ -155,19 +194,22 @@ const Loader = ({ children }) => {
           }
 
           if (element.tagName === 'IMG') {
+            // Check if this is a Next.js Image component
+            const isNextImage = element.hasAttribute('data-nimg') || element.hasAttribute('data-nextjs-image');
+            
             if (element.complete) {
-              console.log(`Loader: Image already complete: ${element.src}`);
+              console.log(`Loader: Image already complete: ${element.src} (${isNextImage ? 'Next.js Image' : 'Regular img'})`);
               updateProgress();
               resolve();
             } else {
-              console.log(`Loader: Waiting for image to load: ${element.src}`);
+              console.log(`Loader: Waiting for image to load: ${element.src} (${isNextImage ? 'Next.js Image' : 'Regular img'})`);
               element.onload = () => {
-                console.log(`Loader: Image loaded: ${element.src}`);
+                console.log(`Loader: Image loaded: ${element.src} (${isNextImage ? 'Next.js Image' : 'Regular img'})`);
                 updateProgress();
                 resolve();
               };
               element.onerror = () => {
-                console.log(`Loader: Image failed to load: ${element.src}`);
+                console.log(`Loader: Image failed to load: ${element.src} (${isNextImage ? 'Next.js Image' : 'Regular img'})`);
                 updateProgress();
                 resolve();
               };
@@ -283,11 +325,13 @@ const Loader = ({ children }) => {
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
       const handleNextJsEvent = (event) => {
+        console.log('Loader: Next.js event detected:', event.type);
         if (event.type === 'beforeunload' || 
             event.type === 'load' ||
             window.location.search.includes('_next')) {
           setTimeout(() => {
             setIsCompiling(true);
+            setIsLoading(true);
             setLoadingStage('Next.js is updating...');
           }, 0);
         }
@@ -302,9 +346,11 @@ const Loader = ({ children }) => {
           if (mutation.type === 'attributes' && 
               mutation.attributeName === 'data-nextjs-router-state') {
             const state = mutation.target.getAttribute('data-nextjs-router-state');
+            console.log('Loader: Router state changed to:', state);
             if (state === 'loading' || state === 'compiling' || state === 'updating') {
               setTimeout(() => {
                 setIsCompiling(true);
+                setIsLoading(true);
                 setLoadingStage(`Next.js is ${state}...`);
               }, 0);
             }
@@ -318,10 +364,57 @@ const Loader = ({ children }) => {
         observer.observe(routerElement, { attributes: true });
       }
 
+      // Also observe the document body for any router state elements
+      const bodyObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'childList') {
+            const routerElement = document.querySelector('[data-nextjs-router-state]');
+            if (routerElement && !routerElement.hasAttribute('data-loader-observed')) {
+              routerElement.setAttribute('data-loader-observed', 'true');
+              observer.observe(routerElement, { attributes: true });
+            }
+          }
+        });
+      });
+
+      bodyObserver.observe(document.body, { childList: true, subtree: true });
+
+      // Monitor for any compilation indicators in the DOM
+      const compilationObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'childList') {
+            // Check if any new elements indicate compilation
+            mutation.addedNodes.forEach((node) => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                const element = node;
+                if (element.getAttribute && (
+                  element.getAttribute('data-nextjs-router-state') === 'loading' ||
+                  element.getAttribute('data-nextjs-router-state') === 'compiling' ||
+                  element.getAttribute('data-nextjs-router-state') === 'updating' ||
+                  element.classList.contains('nextjs-loading') ||
+                  element.classList.contains('nextjs-compiling')
+                )) {
+                  console.log('Loader: Compilation indicator found in DOM');
+                  setTimeout(() => {
+                    setIsCompiling(true);
+                    setIsLoading(true);
+                    setLoadingStage('Next.js is compiling...');
+                  }, 0);
+                }
+              }
+            });
+          }
+        });
+      });
+
+      compilationObserver.observe(document.documentElement, { childList: true, subtree: true });
+
       return () => {
         window.removeEventListener('beforeunload', handleNextJsEvent);
         window.removeEventListener('load', handleNextJsEvent);
         observer.disconnect();
+        bodyObserver.disconnect();
+        compilationObserver.disconnect();
       };
     }
   }, []);
