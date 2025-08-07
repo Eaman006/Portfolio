@@ -20,7 +20,7 @@ const Loader = ({ children }) => {
       const hasNextInUrl = window.location.search.includes('_next') || window.location.search.includes('__next');
       const hasNextInPath = window.location.pathname.includes('_next') || window.location.pathname.includes('__next');
       
-      console.log('Loader: Checking compilation status:', { routerState, hasNextInUrl, hasNextInPath });
+    
       
       if (routerState === 'loading' || routerState === 'compiling' || routerState === 'updating' || routerState === 'stale' || hasNextInUrl || hasNextInPath) {
         console.log('Loader: Compilation detected!');
@@ -59,7 +59,7 @@ const Loader = ({ children }) => {
       // Also listen for URL changes that might indicate compilation
       const handleUrlChange = () => {
         if (window.location.search.includes('_next') || window.location.pathname.includes('_next')) {
-          console.log('Loader: URL change detected, showing compilation loader');
+          
           forceShowLoader();
         }
       };
@@ -78,7 +78,7 @@ const Loader = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log(`Loader: Route changed to ${pathname}`);
+    
     
     // Reset loader state when route changes
     setIsLoading(true);
@@ -171,7 +171,7 @@ const Loader = ({ children }) => {
     };
 
     const processMediaLoading = async (allMedia, totalMedia) => {
-      console.log(`Loader: Starting to process ${totalMedia} media items`);
+  
       
       const mediaPromises = allMedia.map((element, index) => {
         return new Promise((resolve) => {
@@ -421,60 +421,82 @@ const Loader = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-gray-800">
-        <div className="text-center loader-slide-in">
+      <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+        <div className="text-center animate-fade-in">
           <div className="relative">
-            {/* Logo or brand name */}
-            <div className="text-white text-2xl font-bold mb-8 loader-pulse">
-              Loading
-            </div>
-            
-            {/* Spinning loader */}
-            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-            
-            {/* Progress bar */}
-            <div className="w-64 h-2 bg-gray-200 rounded-full overflow-hidden mb-4">
-              <div 
-                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ease-out"
-                style={{ width: `${loadingProgress}%` }}
-              ></div>
-            </div>
-            
-            {/* Loading text */}
-            <div className="text-white text-lg font-semibold mb-2">
-              {isCompiling ? 'Compiling...' : 'Loading Portfolio...'}
-            </div>
-            
-            {/* Current route */}
-            <div className="text-blue-400 text-xs mb-2">
-              Route: {pathname}
-            </div>
-            
-            {/* Loading stage */}
-            <div className="text-blue-300 text-sm mb-2">
-              {loadingStage}
-            </div>
-            
-            {/* Development mode indicator */}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="text-yellow-400 text-xs mb-2">
-                Development Mode
+            {/* Modern animated logo/brand */}
+            <div className="mb-8">
+              <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
+                Portfolio
               </div>
-            )}
-            
-            {/* Progress percentage */}
-            <div className="text-blue-200 text-sm">
-              {Math.round(loadingProgress)}% ({loadedCount}/{totalCount})
             </div>
             
-            {/* Animated dots */}
-            <div className="flex justify-center mt-4 space-x-1">
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            {/* Modern animated loader */}
+            <div className="relative w-24 h-24 mx-auto mb-8">
+              {/* Outer ring */}
+              <div className="absolute inset-0 border-4 border-transparent border-t-blue-400 rounded-full animate-spin"></div>
+              {/* Middle ring */}
+              <div className="absolute inset-2 border-4 border-transparent border-t-purple-400 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+              {/* Inner ring */}
+              <div className="absolute inset-4 border-4 border-transparent border-t-pink-400 rounded-full animate-spin" style={{ animationDuration: '2s' }}></div>
+              {/* Center dot */}
+              <div className="absolute inset-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-pulse"></div>
+            </div>
+            
+            {/* Modern progress bar */}
+            <div className="w-80 h-3 bg-gray-800 rounded-full overflow-hidden mb-6 backdrop-blur-sm">
+              <div 
+                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-500 ease-out rounded-full relative overflow-hidden"
+                style={{ width: `${loadingProgress}%` }}
+              >
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+              </div>
+            </div>
+            
+            {/* Loading status */}
+            <div className="space-y-2 mb-6">
+              <div className="text-white text-lg font-medium">
+                Loading
+              </div>
+            </div>
+            
+            {/* Progress details */}
+            <div className="flex justify-between items-center text-sm mb-4">
+              <span className="text-blue-300">{Math.round(loadingProgress)}%</span>
+            </div>
+            
+            
+            
+            {/* Modern animated dots */}
+            <div className="flex justify-center mt-6 space-x-2">
+              <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce"></div>
+              <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
             </div>
           </div>
         </div>
+        
+        {/* Add custom CSS for animations */}
+        <style jsx>{`
+          @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+          }
+          
+          @keyframes fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          
+          .animate-shimmer {
+            animation: shimmer 2s infinite;
+          }
+          
+          .animate-fade-in {
+            animation: fade-in 0.6s ease-out;
+          }
+        `}</style>
       </div>
     );
   }
