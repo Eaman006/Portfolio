@@ -1,16 +1,49 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { usePathname } from 'next/navigation';
+
+// Create context for loader state
+const LoaderContext = createContext();
+
+// Custom hook to use loader
+export const useLoader = () => {
+  const context = useContext(LoaderContext);
+  if (!context) {
+    throw new Error('useLoader must be used within a LoaderProvider');
+  }
+  return context;
+};
 
 const Loader = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadedCount, setLoadedCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [loadingStage, setLoadingStage] = useState('Initializing...');
   const [isCompiling, setIsCompiling] = useState(false);
+  const [isLinkLoading, setIsLinkLoading] = useState(false);
   const pathname = usePathname();
+
+  // Function to trigger loader for link clicks
+  const triggerLinkLoader = () => {
+    setIsLinkLoading(true);
+    setIsLoading(true);
+    setLoadedCount(0);
+    setTotalCount(0);
+    setLoadingStage('Loading...');
+    
+    // Simulate progress for 5 seconds
+    setTimeout(() => {
+      setIsLinkLoading(false);
+      setIsLoading(false);
+    }, 5000);
+  };
+
+  // Context value
+  const contextValue = {
+    triggerLinkLoader,
+    isLinkLoading
+  };
 
   // Check if Next.js is compiling (development mode)
   const checkCompilationStatus = () => {
@@ -41,8 +74,7 @@ const Loader = ({ children }) => {
         setIsLoading(true);
         setIsCompiling(true);
         setLoadingStage('Next.js is compiling...');
-        setLoadingProgress(0);
-      };
+        };
 
       // Check immediately
       if (checkCompilationStatus()) {
@@ -82,7 +114,6 @@ const Loader = ({ children }) => {
     
     // Reset loader state when route changes
     setIsLoading(true);
-    setLoadingProgress(0);
     setLoadedCount(0);
     setTotalCount(0);
     setLoadingStage('Initializing...');
@@ -120,7 +151,6 @@ const Loader = ({ children }) => {
       console.log(`Loader: Initial check - Found ${totalMedia} media items to load`);
       
       setTotalCount(totalMedia);
-      setLoadingProgress(0);
       setLoadedCount(0);
       setLoadingStage(`Found ${totalMedia} media items to load...`);
 
@@ -152,8 +182,7 @@ const Loader = ({ children }) => {
             let simulatedProgress = 0;
             const progressInterval = setInterval(() => {
               simulatedProgress += 10;
-              setLoadingProgress(simulatedProgress);
-              if (simulatedProgress >= 100) {
+                      if (simulatedProgress >= 100) {
                 clearInterval(progressInterval);
                 setTimeout(() => {
                   setIsLoading(false);
@@ -171,25 +200,34 @@ const Loader = ({ children }) => {
     };
 
     const processMediaLoading = async (allMedia, totalMedia) => {
-  
+    // Create a counter to track loaded items
+    let loadedItems = 0;
+    
+    // Function to update progress with throttling and batching
+    const updateProgress = () => {
+      loadedItems++;
+      const newProgress = (loadedItems / totalMedia) * 100;
+      const roundedProgress = Math.min(Math.round(newProgress), 100);
       
-      const mediaPromises = allMedia.map((element, index) => {
-        return new Promise((resolve) => {
-          const updateProgress = () => {
-            setLoadedCount((prevCount) => {
-              const newCount = prevCount + 1;
-              const newProgress = (newCount / totalMedia) * 100;
-              console.log(`Loader: Progress ${newCount}/${totalMedia} (${Math.round(newProgress)}%)`);
-              setLoadingProgress(Math.min(newProgress, 100));
-              setLoadingStage(`Loaded ${newCount} of ${totalMedia} items...`);
-              return newCount;
-            });
-          };
+      // Batch state updates
+      requestAnimationFrame(() => {
+        setLoadedCount(loadedItems);
+          setLoadingStage(`Loaded ${loadedItems} of ${totalMedia} items...`);
+      });
+      
+      console.log(`Loader: Progress ${loadedItems}/${totalMedia} (${roundedProgress}%)`);
+    };
+    
+    const mediaPromises = allMedia.map((element) => {
+      return new Promise((resolve) => {
 
           // For background image elements, mark as loaded immediately
           if (element.tagName !== 'IMG' && element.tagName !== 'VIDEO' && element.tagName !== 'IFRAME' && element.tagName !== 'AUDIO') {
-            updateProgress();
-            resolve();
+            // Use setTimeout to avoid blocking the main thread
+            setTimeout(() => {
+              updateProgress();
+              resolve();
+            }, 0);
             return;
           }
 
@@ -260,17 +298,21 @@ const Loader = ({ children }) => {
 
       await Promise.race([Promise.all(mediaPromises), timeoutPromise]);
       
-      // Ensure progress reaches 100%
-      setLoadingProgress(100);
-      setLoadedCount(totalMedia);
+      // Ensure progress reaches 100% with a smooth transition
+      const finalizeLoading = () => {
+          setLoadedCount(totalMedia);
+        setLoadingStage('Finalizing...');
+        
+        // Add a small delay for smooth transition
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+      };
       
-      // Final stage
-      setLoadingStage('Finalizing...');
-      
-      // Add a small delay for smooth transition
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
+      // Ensure the UI has time to update before finalizing
+      requestAnimationFrame(() => {
+        setTimeout(finalizeLoading, 100);
+      });
     };
 
     // Check compilation status first
@@ -421,87 +463,75 @@ const Loader = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-        <div className="text-center animate-fade-in">
-          <div className="relative">
-            {/* Modern animated logo/brand */}
-            <div className="mb-8">
-              <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
-                Portfolio
+      <LoaderContext.Provider value={contextValue}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+          <div className="text-center animate-fade-in">
+            <div className="relative">
+              {/* Modern animated logo/brand */}
+              <div className="mb-8">
+                <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
+                  Portfolio
+                </div>
               </div>
-            </div>
-            
-            {/* Modern animated loader */}
-            <div className="relative w-24 h-24 mx-auto mb-8">
-              {/* Outer ring */}
-              <div className="absolute inset-0 border-4 border-transparent border-t-blue-400 rounded-full animate-spin"></div>
-              {/* Middle ring */}
-              <div className="absolute inset-2 border-4 border-transparent border-t-purple-400 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-              {/* Inner ring */}
-              <div className="absolute inset-4 border-4 border-transparent border-t-pink-400 rounded-full animate-spin" style={{ animationDuration: '2s' }}></div>
-              {/* Center dot */}
-              <div className="absolute inset-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-pulse"></div>
-            </div>
-            
-            {/* Modern progress bar */}
-            <div className="w-80 h-3 bg-gray-800 rounded-full overflow-hidden mb-6 backdrop-blur-sm">
-              <div 
-                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-500 ease-out rounded-full relative overflow-hidden"
-                style={{ width: `${loadingProgress}%` }}
-              >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+              
+              {/* Modern animated loader */}
+              <div className="relative w-24 h-24 mx-auto mb-8">
+                {/* Outer ring */}
+                <div className="absolute inset-0 border-4 border-transparent border-t-blue-400 rounded-full animate-spin"></div>
+                {/* Middle ring */}
+                <div className="absolute inset-2 border-4 border-transparent border-t-purple-400 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+                {/* Inner ring */}
+                <div className="absolute inset-4 border-4 border-transparent border-t-pink-400 rounded-full animate-spin" style={{ animationDuration: '2s' }}></div>
+                {/* Center dot */}
+                <div className="absolute inset-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-pulse"></div>
               </div>
-            </div>
-            
-            {/* Loading status */}
-            <div className="space-y-2 mb-6">
-              <div className="text-white text-lg font-medium">
-                Loading
+              
+              {/* Loading status */}
+              <div className="space-y-2 mb-6">
+                <div className="text-white text-lg font-medium">
+                  {isLinkLoading ? 'Navigating...' : 'Loading...'}
+                </div>
               </div>
-            </div>
-            
-            {/* Progress details */}
-            <div className="flex justify-between items-center text-sm mb-4">
-              <span className="text-blue-300">{Math.round(loadingProgress)}%</span>
-            </div>
-            
-            
-            
-            {/* Modern animated dots */}
-            <div className="flex justify-center mt-6 space-x-2">
-              <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce"></div>
-              <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              
+              {/* Modern animated dots */}
+              <div className="flex justify-center mt-6 space-x-2">
+                <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce"></div>
+                <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              </div>
             </div>
           </div>
+          
+          {/* Add custom CSS for animations */}
+          <style jsx>{`
+            @keyframes shimmer {
+              0% { transform: translateX(-100%); }
+              100% { transform: translateX(100%); }
+            }
+            
+            @keyframes fade-in {
+              from { opacity: 0; transform: translateY(20px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .animate-shimmer {
+              animation: shimmer 2s infinite;
+            }
+            
+            .animate-fade-in {
+              animation: fade-in 0.6s ease-out;
+            }
+          `}</style>
         </div>
-        
-        {/* Add custom CSS for animations */}
-        <style jsx>{`
-          @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-          }
-          
-          @keyframes fade-in {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          
-          .animate-shimmer {
-            animation: shimmer 2s infinite;
-          }
-          
-          .animate-fade-in {
-            animation: fade-in 0.6s ease-out;
-          }
-        `}</style>
-      </div>
+      </LoaderContext.Provider>
     );
   }
 
-  return children;
+  return (
+    <LoaderContext.Provider value={contextValue}>
+      {children}
+    </LoaderContext.Provider>
+  );
 };
 
 export default Loader; 

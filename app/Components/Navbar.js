@@ -4,13 +4,21 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { IoMdHome } from "react-icons/io";
 import { RiComputerFill } from "react-icons/ri";
-import { MdFindInPage } from "react-icons/md";
+import { MdFindInPage, MdMenu, MdClose } from "react-icons/md";
 import { IoCall } from "react-icons/io5";
 import { BsDatabaseFillGear } from "react-icons/bs";
+import { useLoader } from './Loader';
 
 const Navbar = () => {
   const pathname = usePathname();
   const [title, setTitle] = useState('Computer Engineer');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { triggerLinkLoader } = useLoader();
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const titles = ['Computer Engineer', 'Fullstack Developer'];
@@ -21,6 +29,7 @@ const Navbar = () => {
     }, 6000);
     return () => clearInterval(interval);
   }, []);
+
   const getActiveClass = (path) => {
     // Special case for root path to avoid '/' matching everything
     if (path === "/") {
@@ -28,23 +37,41 @@ const Navbar = () => {
     }
     return pathname.startsWith(path) ? "text-blue-500" : "hover:text-blue-500";
   };
+
+  const handleLinkClick = () => {
+    triggerLinkLoader();
+  };
+
   return (
-    <div className='p-3 flex justify-between'>
-      <Link href="/" className='font-bold text-3xl flex items-center'>
-        <div className='text-sky-300'>Eaman |</div>
-        <div
-          key={title}
-          className='text-xl text-center pt-1 text-blue-400 fade-in'
+    <div className='p-3 flex flex-col sm:flex-row justify-between'>
+      <div className='flex justify-between items-center'>
+        <Link href="/" className='font-bold text-3xl flex items-center' onClick={handleLinkClick}>
+          <div className='text-sky-300'>Eaman |</div>
+          <div
+            key={title}
+            className='text-xl text-center pt-1 text-blue-400 fade-in'
+          >
+            {title}
+          </div>
+        </Link>
+        
+        {/* Mobile menu button */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className='sm:hidden text-gray-600 focus:outline-none'
+          aria-label='Toggle menu'
         >
-          {title}
-        </div>
-      </Link>
-      <div className='flex gap-5'>
-        <Link href="/" className={`${getActiveClass("/")} flex gap-0.5`}><span className='m-1'><IoMdHome /></span>Home</Link>
-        <Link href="/project" className={`${getActiveClass("/project")} flex gap-0.5`}><span className='m-1'><RiComputerFill /></span>Project</Link>
-        <Link href="/about" className={`${getActiveClass("/about")} flex gap-0.5`}><span className='m-1'><MdFindInPage /></span>About</Link>
-        <Link href="/contact" className={`${getActiveClass("/contact")} flex gap-0.5`}><span className='m-1'><IoCall /></span>Contact me</Link>
-        <Link href="/services" className={`${getActiveClass("/services")} flex gap-0.5`}><span className='m-1'><BsDatabaseFillGear /></span>Services</Link>
+          {isMenuOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
+        </button>
+      </div>
+      
+      {/* Navigation Links */}
+      <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:flex gap-5 mt-3 sm:mt-0`}>
+        <Link href="/" className={`${getActiveClass("/")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><IoMdHome /></span>Home</Link>
+        <Link href="/project" className={`${getActiveClass("/project")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><RiComputerFill /></span>Project</Link>
+        <Link href="/about" className={`${getActiveClass("/about")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><MdFindInPage /></span>About</Link>
+        <Link href="/contact" className={`${getActiveClass("/contact")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><IoCall /></span>Contact me</Link>
+        <Link href="/services" className={`${getActiveClass("/services")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><BsDatabaseFillGear /></span>Services</Link>
       </div>
     </div>
   )
