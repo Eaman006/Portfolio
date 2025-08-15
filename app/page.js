@@ -37,7 +37,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="lg:w-[90vw] lg:h-[90vh] w-[90vw] h-[40vh] overflow-hidden relative m-2 p-2">
+      <div className="lg:w-[90vw] lg:h-[90vh] w-[90vw] h-[20vh] overflow-hidden relative m-2 p-2">
         <Image
           src="/main.png"
           alt="Full Screen Image"
