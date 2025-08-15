@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-5 justify-between bg-gradient-to-b from-gray-800">
-      <div className="m-5 w-full lg:w-2/3 pt-5">
+      <div className="m-5 lg:w-2/3 pt-5 px-2 ">
         <div className="bg-black p-2 mt-2 rounded-xl text-xl border-2 border-blue-400 w-fit flex home-fade-in">
           <span>👋Hi there, I&apos;m </span>
           <span className="text-blue-400 px-2 font-bold">Eaman</span>
@@ -37,7 +37,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="w-[90vw] h-[90vh] overflow-hidden relative m-2 p-2">
+      <div className="lg:w-[90vw] lg:h-[90vh] w-[90vw] h-[45vh] overflow-hidden relative m-2 p-2">
         <Image
           src="/main.png"
           alt="Full Screen Image"
