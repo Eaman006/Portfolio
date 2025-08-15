@@ -11,24 +11,38 @@ import { useLoader } from './Loader';
 
 const Navbar = () => {
   const pathname = usePathname();
+  const [isMounted, setIsMounted] = useState(false);
   const [title, setTitle] = useState('Computer Engineer');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { triggerLinkLoader } = useLoader();
+
+  // Set isMounted to true after component mounts
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
+  // Title animation effect
   useEffect(() => {
+    if (!isMounted) return;
+    
     const titles = ['Computer Engineer', 'Fullstack Developer'];
     let index = 0;
+    
+    // Set initial title immediately
+    setTitle(titles[0]);
+    
     const interval = setInterval(() => {
       index = (index + 1) % titles.length;
       setTitle(titles[index]);
     }, 6000);
+    
     return () => clearInterval(interval);
-  }, []);
+  }, [isMounted]);
 
   const getActiveClass = (path) => {
     // Special case for root path to avoid '/' matching everything
@@ -47,12 +61,14 @@ const Navbar = () => {
       <div className='flex justify-between items-center'>
         <Link href="/" className='font-bold text-3xl flex items-center' onClick={handleLinkClick}>
           <div className='text-sky-300'>Eaman |</div>
-          <div
-            key={title}
-            className='text-xl text-center pt-1 text-blue-400 fade-in'
-          >
-            {title}
-          </div>
+          {isMounted && (
+            <div
+              key={title}
+              className='text-xl text-center pt-1 text-blue-400 fade-in'
+            >
+              {title}
+            </div>
+          )}
         </Link>
         
         {/* Mobile menu button */}
