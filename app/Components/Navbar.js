@@ -57,7 +57,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className='p-3 flex flex-col sm:flex-row justify-between'>
+    <div className='p-3 flex flex-col sm:flex-row justify-between relative z-50 bg-black'>
       <div className='flex justify-between items-center'>
         <Link href="/" className='font-bold text-3xl flex items-center' onClick={handleLinkClick}>
           <div className='text-sky-300'>Eaman |</div>
