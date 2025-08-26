@@ -20,64 +20,22 @@ const AnimatedBackground = () => {
   useEffect(() => {
     const words = wordsRef.current;
     let animationFrame;
-    // Slow, small random speeds
+    // Slightly faster random speeds
     const speeds = words.map(() => ({
-      x: getRandom(-0.08, 0.08),
-      y: getRandom(-0.08, 0.08)
+      x: getRandom(-0.15, 0.15),
+      y: getRandom(-0.15, 0.15)
     }));
 
-    // Store initial positions and dimensions with glow data
+    // Store initial positions with glow data
     const wordData = words.map((el) => {
-      if (!el) return { x: 0, y: 0, width: 0, height: 0, glowPhase: 0, glowSpeed: 0 };
-      const rect = el.getBoundingClientRect();
+      if (!el) return { x: 0, y: 0, glowPhase: 0, glowSpeed: 0 };
       return {
         x: parseFloat(el.style.left),
         y: parseFloat(el.style.top),
-        width: rect.width / window.innerWidth * 100,
-        height: rect.height / window.innerHeight * 100,
         glowPhase: getRandom(0, Math.PI * 2), // Random starting phase
         glowSpeed: getRandom(0.01, 0.03) // Random glow speed
       };
     });
-
-    // Check collision between two words
-    function checkCollision(word1, word2) {
-      return !(word1.x + word1.width < word2.x || 
-               word2.x + word2.width < word1.x || 
-               word1.y + word1.height < word2.y || 
-               word2.y + word2.height < word1.y);
-    }
-
-    // Resolve collision by moving words apart
-    function resolveCollision(i, j) {
-      const word1 = wordData[i];
-      const word2 = wordData[j];
-      const centerX1 = word1.x + word1.width / 2;
-      const centerY1 = word1.y + word1.height / 2;
-      const centerX2 = word2.x + word2.width / 2;
-      const centerY2 = word2.y + word2.height / 2;
-      
-      const dx = centerX2 - centerX1;
-      const dy = centerY2 - centerY1;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      
-      if (distance > 0) {
-        const pushDistance = 2;
-        const pushX = (dx / distance) * pushDistance;
-        const pushY = (dy / distance) * pushDistance;
-        
-        word1.x -= pushX;
-        word1.y -= pushY;
-        word2.x += pushX;
-        word2.y += pushY;
-        
-        // Reverse speeds to bounce apart
-        speeds[i].x *= -0.8;
-        speeds[i].y *= -0.8;
-        speeds[j].x *= -0.8;
-        speeds[j].y *= -0.8;
-      }
-    }
 
     function animate() {
       words.forEach((el, i) => {
@@ -91,30 +49,21 @@ const AnimatedBackground = () => {
         if (x < 0) {
           x = 0;
           speeds[i].x *= -1;
-        } else if (x + wordData[i].width > 95) {
-          x = 95 - wordData[i].width;
+        } else if (x > 95) {
+          x = 95;
           speeds[i].x *= -1;
         }
         if (y < 0) {
           y = 0;
           speeds[i].y *= -1;
-        } else if (y + wordData[i].height > 95) {
-          y = 95 - wordData[i].height;
+        } else if (y > 95) {
+          y = 95;
           speeds[i].y *= -1;
         }
         
         wordData[i].x = x;
         wordData[i].y = y;
       });
-
-      // Check for collisions between all word pairs
-      for (let i = 0; i < wordData.length; i++) {
-        for (let j = i + 1; j < wordData.length; j++) {
-          if (checkCollision(wordData[i], wordData[j])) {
-            resolveCollision(i, j);
-          }
-        }
-      }
 
       // Update DOM positions with glow effect
       words.forEach((el, i) => {
@@ -147,18 +96,11 @@ const AnimatedBackground = () => {
     
     // Small delay to ensure elements are rendered before starting animation
     setTimeout(() => {
-      // Recalculate dimensions after render
+      // Initialize glow properties if not set
       wordData.forEach((data, i) => {
-        const el = words[i];
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          data.width = rect.width / window.innerWidth * 100;
-          data.height = rect.height / window.innerHeight * 100;
-          // Initialize glow properties if not set
-          if (data.glowPhase === undefined) {
-            data.glowPhase = getRandom(0, Math.PI * 2);
-            data.glowSpeed = getRandom(0.01, 0.03);
-          }
+        if (data.glowPhase === undefined) {
+          data.glowPhase = getRandom(0, Math.PI * 2);
+          data.glowSpeed = getRandom(0.01, 0.03);
         }
       });
       animate();
