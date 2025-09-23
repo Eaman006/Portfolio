@@ -11,6 +11,29 @@ const page = () => {
       <div className='flex overflow-x-auto gap-5 mx-2 px-2'>
         <div className='m-2 p-2 w-sm bg-[#00000073] rounded-xl flex-shrink-0'>
           <div className='m-2 p-2'>
+            <div className='font-bold text-xl'>Task Manager</div>
+            <div className='m-2'><Image src="/task-manager.png" width={300} height={400} alt='campus'></Image></div>
+            <div className='m-2 text-lg font-bold'>Features</div>
+            <ul className='m-2 h-51'>
+              <li>Effectively Plan your daily task and Goals.</li>
+              <li>Realtime Monitoring your Tasks.</li>
+              <li>Graph to keep track on your progress.</li>
+
+            </ul>
+            <div className='flex justify-center bottom-5'>
+              <div className='m-2'>
+                <Link href="https://github.com/Eaman006/Task-Manager.git" className='bg-blue-600 p-2 flex rounded-lg'><span className='m-1'><FaGithub /></span>Github</Link>
+              </div>
+              <div className='m-2'>
+                <Link href="https://task-manager-livid-phi.vercel.app/" className='bg-red-600 p-2 flex rounded-lg'><IoGlobe className='my-1' />Website</Link>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
+        <div className='m-2 p-2 w-sm bg-[#00000073] rounded-xl flex-shrink-0'>
+          <div className='m-2 p-2'>
             <div className='font-bold text-xl'>Campus Navigator</div>
             <div className='m-2'><Image src="/campus1.png" width={300} height={400} alt='campus'></Image></div>
             <div className='m-2 text-lg font-bold'>Features</div>
@@ -31,6 +54,7 @@ const page = () => {
 
           </div>
         </div>
+        
         <div className='m-2 p-2 w-sm bg-[#00000073] rounded-xl flex-shrink-0'>
           <div className='m-2 p-2'>
             <div className='font-bold text-xl'>Url Flix</div>
