@@ -2,10 +2,13 @@
   "name": "portfolio",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "node --no-webstorage ./node_modules/next/dist/bin/next dev --turbopack",
-    "build": "node --no-webstorage ./node_modules/next/dist/bin/next build",
-    "start": "node --no-webstorage ./node_modules/next/dist/bin/next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
