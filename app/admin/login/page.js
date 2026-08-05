@@ -9,7 +9,7 @@ import AnimatedBackground from '@/app/Components/AnimatedBackground';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('eamanadeep006@gmail.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="eamanadeep006@gmail.com"
+                placeholder="Enter admin email"
                 className="w-full bg-gray-950/80 text-white pl-11 pr-4 py-3 rounded-xl border border-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 outline-none transition-all duration-200 placeholder-gray-600 text-sm"
               />
             </div>
