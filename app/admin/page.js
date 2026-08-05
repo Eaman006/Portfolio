@@ -18,10 +18,11 @@ import {
   BsPlusLg,
   BsXCircle,
   BsCheckCircleFill,
-  BsCloudUploadFill
+  BsCloudUploadFill,
+  BsAwardFill
 } from 'react-icons/bs';
-import { MdOutlineSecurity, MdOutlineCleaningServices, MdDashboard, MdOutlineImage, MdOutlineEditNote } from 'react-icons/md';
-import { FaGithub } from 'react-icons/fa';
+import { MdOutlineSecurity, MdOutlineCleaningServices, MdDashboard, MdOutlineImage, MdOutlineEditNote, MdPictureAsPdf } from 'react-icons/md';
+import { FaGithub, FaDownload } from 'react-icons/fa';
 import { IoGlobe } from 'react-icons/io5';
 import AnimatedBackground from '@/app/Components/AnimatedBackground';
 
@@ -37,12 +38,12 @@ export default function AdminDashboardPage() {
   const [projects, setProjects] = useState([]);
   const [isProjectsLoading, setIsProjectsLoading] = useState(false);
   
-  // Modals & Form State
+  // Project Modals & Form State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('create'); // 'create' | 'edit'
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   
-  // Form fields
+  // Project Form fields
   const [formTitle, setFormTitle] = useState('');
   const [formImage, setFormImage] = useState('');
   const [formFeatures, setFormFeatures] = useState('');
@@ -51,40 +52,26 @@ export default function AdminDashboardPage() {
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-
-  // Handle Image File Upload to /public/project-image
-  const handleImageUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploadingImage(true);
-    setFormError('');
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setFormImage(data.imagePath); // Sets image path e.g. /project-image/1723485_filename.png
-      } else {
-        setFormError(data.error || 'Failed to upload image');
-      }
-    } catch (err) {
-      console.error('Image upload error:', err);
-      setFormError('Network error uploading image file');
-    } finally {
-      setIsUploadingImage(false);
-    }
-  };
-
-  // Delete confirmation
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+
+  // Certifications State
+  const [certifications, setCertifications] = useState([]);
+  const [isCertsLoading, setIsCertsLoading] = useState(false);
+  const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const [certModalMode, setCertModalMode] = useState('create');
+  const [selectedCertId, setSelectedCertId] = useState(null);
+
+  // Cert Form fields
+  const [certTitle, setCertTitle] = useState('');
+  const [certImage, setCertImage] = useState('');
+  const [certIssueDate, setCertIssueDate] = useState('');
+  const [certSkills, setCertSkills] = useState('');
+  const [certPdfUrl, setCertPdfUrl] = useState('');
+  const [certFormError, setCertFormError] = useState('');
+  const [isCertSubmitting, setIsCertSubmitting] = useState(false);
+  const [isUploadingCertImage, setIsUploadingCertImage] = useState(false);
+  const [isUploadingCertPdf, setIsUploadingCertPdf] = useState(false);
+  const [deleteConfirmCertId, setDeleteConfirmCertId] = useState(null);
 
   // Fetch projects from server API
   const fetchProjects = async () => {
@@ -102,16 +89,30 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Fetch certifications from server API
+  const fetchCertifications = async () => {
+    setIsCertsLoading(true);
+    try {
+      const res = await fetch('/api/certifications');
+      const data = await res.json();
+      if (data.success && data.certifications) {
+        setCertifications(data.certifications);
+      }
+    } catch (err) {
+      console.error('Error fetching certifications:', err);
+    } finally {
+      setIsCertsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
-      // 1. Check tab-session storage (strictly expires when user closes the admin page tab/window)
       const tabSession = sessionStorage.getItem('admin_session');
       if (!tabSession) {
         router.replace('/admin/login');
         return;
       }
 
-      // 2. Verify server-side session cookie
       try {
         const res = await fetch('/api/admin/verify');
         const data = await res.json();
@@ -126,6 +127,7 @@ export default function AdminDashboardPage() {
             setLoginTime(new Date().toLocaleTimeString());
           }
           fetchProjects();
+          fetchCertifications();
         } else {
           sessionStorage.removeItem('admin_session');
           router.replace('/admin/login');
@@ -156,7 +158,37 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Open Create Modal
+  // --- PROJECT HANDLERS ---
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingImage(true);
+    setFormError('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setFormImage(data.imagePath);
+      } else {
+        setFormError(data.error || 'Failed to upload image');
+      }
+    } catch (err) {
+      console.error('Image upload error:', err);
+      setFormError('Network error uploading image file');
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
   const openCreateModal = () => {
     setModalMode('create');
     setSelectedProjectId(null);
@@ -169,7 +201,6 @@ export default function AdminDashboardPage() {
     setIsModalOpen(true);
   };
 
-  // Open Edit Modal by clicking on project name or edit button
   const openEditModal = (project) => {
     setModalMode('edit');
     setSelectedProjectId(project.id);
@@ -182,7 +213,6 @@ export default function AdminDashboardPage() {
     setIsModalOpen(true);
   };
 
-  // Save Project (Create or Update)
   const handleSaveProject = async (e) => {
     e.preventDefault();
     if (!formTitle.trim()) {
@@ -237,7 +267,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Delete Project
   const handleDeleteProject = async (id) => {
     try {
       const res = await fetch(`/api/projects/${id}`, {
@@ -250,6 +279,157 @@ export default function AdminDashboardPage() {
       }
     } catch (err) {
       console.error('Error deleting project:', err);
+    }
+  };
+
+  // --- CERTIFICATION HANDLERS ---
+  const handleCertImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingCertImage(true);
+    setCertFormError('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'project-image');
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setCertImage(data.filePath);
+      } else {
+        setCertFormError(data.error || 'Failed to upload logo/image');
+      }
+    } catch (err) {
+      console.error('Cert image upload error:', err);
+      setCertFormError('Network error uploading logo file');
+    } finally {
+      setIsUploadingCertImage(false);
+    }
+  };
+
+  const handleCertPdfUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingCertPdf(true);
+    setCertFormError('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'certification');
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setCertPdfUrl(data.filePath);
+      } else {
+        setCertFormError(data.error || 'Failed to upload PDF document');
+      }
+    } catch (err) {
+      console.error('PDF upload error:', err);
+      setCertFormError('Network error uploading PDF file');
+    } finally {
+      setIsUploadingCertPdf(false);
+    }
+  };
+
+  const openCreateCertModal = () => {
+    setCertModalMode('create');
+    setSelectedCertId(null);
+    setCertTitle('');
+    setCertImage('');
+    setCertIssueDate('');
+    setCertSkills('');
+    setCertPdfUrl('');
+    setCertFormError('');
+    setIsCertModalOpen(true);
+  };
+
+  const openEditCertModal = (cert) => {
+    setCertModalMode('edit');
+    setSelectedCertId(cert.id);
+    setCertTitle(cert.title || '');
+    setCertImage(cert.image || '');
+    setCertIssueDate(cert.issueDate || '');
+    setCertSkills(cert.skills || '');
+    setCertPdfUrl(cert.pdfUrl || '');
+    setCertFormError('');
+    setIsCertModalOpen(true);
+  };
+
+  const handleSaveCert = async (e) => {
+    e.preventDefault();
+    if (!certTitle.trim()) {
+      setCertFormError('Certification title is required.');
+      return;
+    }
+
+    setIsCertSubmitting(true);
+    setCertFormError('');
+
+    const payload = {
+      title: certTitle,
+      image: certImage,
+      issueDate: certIssueDate,
+      skills: certSkills,
+      pdfUrl: certPdfUrl,
+    };
+
+    try {
+      let res;
+      if (certModalMode === 'create') {
+        res = await fetch('/api/certifications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        res = await fetch(`/api/certifications/${selectedCertId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setIsCertModalOpen(false);
+        fetchCertifications();
+      } else {
+        setCertFormError(data.error || 'Failed to save certification.');
+      }
+    } catch (err) {
+      console.error('Error saving certification:', err);
+      setCertFormError('Network error while saving certification.');
+    } finally {
+      setIsCertSubmitting(false);
+    }
+  };
+
+  const handleDeleteCert = async (id) => {
+    try {
+      const res = await fetch(`/api/certifications/${id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setDeleteConfirmCertId(null);
+        fetchCertifications();
+      }
+    } catch (err) {
+      console.error('Error deleting certification:', err);
     }
   };
 
@@ -315,6 +495,7 @@ export default function AdminDashboardPage() {
           {[
             { id: 'overview', label: 'Overview', icon: MdDashboard },
             { id: 'projects', label: `Projects (${projects.length})`, icon: BsFolderSymlinkFill },
+            { id: 'certifications', label: `Certifications (${certifications.length})`, icon: BsAwardFill },
             { id: 'messages', label: 'Messages', icon: BsEnvelopeFill },
             { id: 'services', label: 'Services', icon: MdOutlineCleaningServices },
             { id: 'security', label: 'Security & Session', icon: MdOutlineSecurity },
@@ -354,22 +535,25 @@ export default function AdminDashboardPage() {
               </div>
             </div>
             <p className="text-xs text-blue-400/80 mt-4 flex items-center gap-1">
-              <span>● Click to manage showcase projects</span>
+              <span>● Click to manage projects</span>
             </p>
           </div>
 
-          <div className="bg-gray-900/80 border border-blue-500/30 rounded-2xl p-5 backdrop-blur-md hover:border-blue-400 transition-all shadow-xl">
+          <div 
+            onClick={() => setActiveTab('certifications')}
+            className="bg-gray-900/80 border border-blue-500/30 rounded-2xl p-5 backdrop-blur-md hover:border-blue-400 cursor-pointer transition-all shadow-xl group"
+          >
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Contact Inquiries</p>
-                <h3 className="text-3xl font-extrabold text-white mt-1">4</h3>
+                <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Certifications</p>
+                <h3 className="text-3xl font-extrabold text-white mt-1 group-hover:text-sky-400 transition-colors">{certifications.length}</h3>
               </div>
               <div className="p-3 bg-sky-500/20 text-sky-400 rounded-xl">
-                <BsEnvelopeFill className="text-xl" />
+                <BsAwardFill className="text-xl" />
               </div>
             </div>
             <p className="text-xs text-sky-400/80 mt-4 flex items-center gap-1">
-              <span>● 2 unread messages</span>
+              <span>● Click to manage certifications</span>
             </p>
           </div>
 
@@ -447,18 +631,18 @@ export default function AdminDashboardPage() {
                     >
                       Manage Projects ({projects.length})
                     </button>
+                    <button
+                      onClick={() => setActiveTab('certifications')}
+                      className="p-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl text-xs font-medium text-center text-gray-300 hover:text-white transition-all"
+                    >
+                      Manage Certifications ({certifications.length})
+                    </button>
                     <Link
-                      href="/project"
+                      href="/about/certification"
                       target="_blank"
                       className="p-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl text-xs font-medium text-center text-gray-300 hover:text-white transition-all"
                     >
-                      View Live Portfolio
-                    </Link>
-                    <Link
-                      href="/contact"
-                      className="p-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 rounded-xl text-xs font-medium text-center text-gray-300 hover:text-white transition-all"
-                    >
-                      Test Contact Form
+                      View Live Certificates
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -600,6 +784,120 @@ export default function AdminDashboardPage() {
                         >
                           Edit Details &rarr;
                         </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* CERTIFICATIONS MANAGEMENT SECTION */}
+          {activeTab === 'certifications' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-800 pb-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                    <BsAwardFill className="text-sky-400" />
+                    Certifications Management
+                  </h2>
+                  <p className="text-gray-400 text-sm mt-1">
+                    Click on any certificate title or edit button to edit skills, issue date, logo, or PDF link.
+                  </p>
+                </div>
+
+                <button
+                  onClick={openCreateCertModal}
+                  className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-500/20 flex items-center gap-2 text-sm transition-all duration-200 transform active:scale-95"
+                >
+                  <BsPlusLg />
+                  <span>Add New Certificate</span>
+                </button>
+              </div>
+
+              {isCertsLoading ? (
+                <div className="p-12 text-center text-gray-400 flex flex-col items-center gap-3">
+                  <div className="w-8 h-8 border-3 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+                  <span>Loading certifications...</span>
+                </div>
+              ) : certifications.length === 0 ? (
+                <div className="p-8 text-center bg-gray-950/60 border border-gray-800 rounded-xl text-gray-400">
+                  No certifications found. Click &quot;Add New Certificate&quot; to add one.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {certifications.map((cert) => (
+                    <div
+                      key={cert.id}
+                      className="bg-gray-950/80 border border-gray-800 hover:border-sky-500/40 rounded-2xl p-5 flex gap-4 transition-all duration-200 shadow-lg group relative"
+                    >
+                      {/* Logo / Badge */}
+                      <div 
+                        onClick={() => openEditCertModal(cert)}
+                        className="w-20 h-20 bg-black/60 rounded-xl border border-gray-800 flex-shrink-0 flex items-center justify-center p-1.5 cursor-pointer relative overflow-hidden"
+                      >
+                        <Image
+                          src={cert.image || '/aws.png'}
+                          alt={cert.title}
+                          fill
+                          className="object-contain p-1"
+                          unoptimized={cert.image?.startsWith('http')}
+                        />
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0 space-y-1.5">
+                        <div className="flex justify-between items-start gap-2">
+                          <button
+                            onClick={() => openEditCertModal(cert)}
+                            className="text-left font-bold text-base text-white hover:text-sky-300 transition-colors group-hover:underline truncate"
+                            title="Click certificate title to edit"
+                          >
+                            {cert.title}
+                          </button>
+
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <button
+                              onClick={() => openEditCertModal(cert)}
+                              className="p-1.5 bg-blue-950/60 hover:bg-blue-900 border border-blue-500/40 text-blue-300 hover:text-white rounded-lg text-xs transition-all"
+                              title="Edit Certificate"
+                            >
+                              <BsPencilSquare />
+                            </button>
+                            <button
+                              onClick={() => setDeleteConfirmCertId(cert.id)}
+                              className="p-1.5 bg-red-950/60 hover:bg-red-900 border border-red-500/40 text-red-400 hover:text-white rounded-lg text-xs transition-all"
+                              title="Delete Certificate"
+                            >
+                              <BsTrashFill />
+                            </button>
+                          </div>
+                        </div>
+
+                        {cert.issueDate && (
+                          <p className="text-xs text-gray-400">Issued on {cert.issueDate}</p>
+                        )}
+
+                        {cert.skills && (
+                          <p className="text-xs text-gray-300 line-clamp-2">
+                            <span className="font-semibold text-sky-400">Skills:</span> {cert.skills}
+                          </p>
+                        )}
+
+                        {cert.pdfUrl && (
+                          <div className="pt-1">
+                            <a
+                              href={cert.pdfUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 font-medium"
+                            >
+                              <MdPictureAsPdf className="text-sm" />
+                              <span className="underline">View PDF</span>
+                              <FaDownload className="text-[10px] text-blue-400" />
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -829,7 +1127,160 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* DELETE CONFIRMATION MODAL */}
+      {/* EDIT / CREATE CERTIFICATE MODAL */}
+      {isCertModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-xl bg-gray-950 border border-sky-500/40 rounded-2xl p-6 shadow-2xl text-white space-y-5 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center border-b border-gray-800 pb-3">
+              <h3 className="text-xl font-bold flex items-center gap-2">
+                <BsAwardFill className="text-sky-400" />
+                <span>{certModalMode === 'create' ? 'Add New Certificate' : 'Edit Certificate Details'}</span>
+              </h3>
+              <button
+                onClick={() => setIsCertModalOpen(false)}
+                className="text-gray-400 hover:text-white text-2xl transition-colors"
+              >
+                <BsXCircle />
+              </button>
+            </div>
+
+            {certFormError && (
+              <div className="p-3 bg-red-950/60 border border-red-500/50 rounded-xl text-red-300 text-xs">
+                {certFormError}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveCert} className="space-y-4">
+              {/* Certificate Title */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+                  Certificate Title *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={certTitle}
+                  onChange={(e) => setCertTitle(e.target.value)}
+                  placeholder="e.g. AWS Certified AI Practitioner"
+                  className="w-full bg-black/80 text-white px-4 py-2.5 rounded-xl border border-gray-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none text-sm"
+                />
+              </div>
+
+              {/* Organization Logo / Image */}
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                    Organization Logo / Badge Image
+                  </label>
+                  <label className="cursor-pointer bg-sky-900/60 hover:bg-sky-800 border border-sky-500/40 text-sky-300 hover:text-white px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all">
+                    <BsCloudUploadFill className="text-sm" />
+                    <span>{isUploadingCertImage ? 'Uploading...' : 'Upload Logo File'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCertImageUpload}
+                      disabled={isUploadingCertImage}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  value={certImage}
+                  onChange={(e) => setCertImage(e.target.value)}
+                  placeholder="e.g. /aws.png or /project-image/logo.png"
+                  className="w-full bg-black/80 text-white px-4 py-2.5 rounded-xl border border-gray-800 focus:border-sky-500 outline-none text-sm"
+                />
+              </div>
+
+              {/* Issue Date */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+                  Issue Date / Year
+                </label>
+                <input
+                  type="text"
+                  value={certIssueDate}
+                  onChange={(e) => setCertIssueDate(e.target.value)}
+                  placeholder="e.g. July 2025"
+                  className="w-full bg-black/80 text-white px-4 py-2.5 rounded-xl border border-gray-800 focus:border-sky-500 outline-none text-sm"
+                />
+              </div>
+
+              {/* Skills */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+                  Associated Skills
+                </label>
+                <input
+                  type="text"
+                  value={certSkills}
+                  onChange={(e) => setCertSkills(e.target.value)}
+                  placeholder="e.g. AWS · Machine Learning · Artificial Intelligence (AI)"
+                  className="w-full bg-black/80 text-white px-4 py-2.5 rounded-xl border border-gray-800 focus:border-sky-500 outline-none text-sm"
+                />
+              </div>
+
+              {/* PDF Document File */}
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                    Certificate PDF File URL / Path
+                  </label>
+                  <label className="cursor-pointer bg-red-900/60 hover:bg-red-800 border border-red-500/40 text-red-300 hover:text-white px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all">
+                    <BsCloudUploadFill className="text-sm" />
+                    <span>{isUploadingCertPdf ? 'Uploading PDF...' : 'Upload PDF File'}</span>
+                    <input
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={handleCertPdfUpload}
+                      disabled={isUploadingCertPdf}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  value={certPdfUrl}
+                  onChange={(e) => setCertPdfUrl(e.target.value)}
+                  placeholder="e.g. /certification/my-certificate.pdf"
+                  className="w-full bg-black/80 text-white px-4 py-2.5 rounded-xl border border-gray-800 focus:border-sky-500 outline-none text-sm"
+                />
+                <p className="text-[11px] text-gray-400 mt-1">
+                  📄 Uploaded PDF certificates are saved to <code className="text-red-300">/public/certification/</code>
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => setIsCertModalOpen(false)}
+                  className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 rounded-xl text-sm font-semibold transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isCertSubmitting}
+                  className="px-5 py-2 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2"
+                >
+                  {isCertSubmitting ? (
+                    <span>Saving...</span>
+                  ) : (
+                    <>
+                      <BsCheckCircleFill />
+                      <span>{certModalMode === 'create' ? 'Create Certificate' : 'Save Changes'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE PROJECT CONFIRMATION MODAL */}
       {deleteConfirmId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
           <div className="bg-gray-950 border border-red-500/40 rounded-2xl p-6 max-w-sm w-full text-white space-y-4 shadow-2xl text-center">
@@ -853,6 +1304,36 @@ export default function AdminDashboardPage() {
                 className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-red-600/30"
               >
                 Yes, Delete Project
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CERTIFICATE CONFIRMATION MODAL */}
+      {deleteConfirmCertId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="bg-gray-950 border border-red-500/40 rounded-2xl p-6 max-w-sm w-full text-white space-y-4 shadow-2xl text-center">
+            <div className="w-12 h-12 bg-red-950/80 border border-red-500/50 rounded-full flex items-center justify-center mx-auto text-red-400 text-2xl">
+              <BsTrashFill />
+            </div>
+            <h3 className="text-lg font-bold text-white">Delete Certificate?</h3>
+            <p className="text-xs text-gray-400">
+              Are you sure you want to delete this certification? This action will remove it from the certifications page.
+            </p>
+
+            <div className="flex justify-center gap-3 pt-2">
+              <button
+                onClick={() => setDeleteConfirmCertId(null)}
+                className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 rounded-xl text-xs font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDeleteCert(deleteConfirmCertId)}
+                className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-red-600/30"
+              >
+                Yes, Delete Certificate
               </button>
             </div>
           </div>

@@ -1,0 +1,119 @@
+[
+  {
+    "id": "google-it-support-professional",
+    "title": "Google IT Support Professional",
+    "image": "/project-image/1785956765310_images.png",
+    "issueDate": "March 2026",
+    "skills": "IT support Specialist",
+    "pdfUrl": "/certification/1785957064510_GoogleIT.pdf",
+    "createdAt": 1785957069973
+  },
+  {
+    "id": "system-administration-and-it-infrastructure-services",
+    "title": "System Administration and IT Infrastructure Services",
+    "image": "/project-image/1785956765310_images.png",
+    "issueDate": "March 2026",
+    "skills": "System Administration",
+    "pdfUrl": "/certification/1785956979286_Coursera_B28NKUKJEXF2.pdf",
+    "createdAt": 1785956985824
+  },
+  {
+    "id": "operating-systems-and-you-becoming-a-power-user",
+    "title": "Operating Systems and You: Becoming a Power User",
+    "image": "/project-image/1785956765310_images.png",
+    "issueDate": "March 2026",
+    "skills": "Operating System",
+    "pdfUrl": "/certification/1785956827260_Coursera_2BW3MD5JR8V4.pdf",
+    "createdAt": 1785956838917
+  },
+  {
+    "id": "bits-and-bytes-of-computer-networks",
+    "title": "Bits and Bytes of Computer Networks",
+    "image": "/project-image/1785956639000_images.png",
+    "issueDate": "March 2026",
+    "skills": "Computer Networks",
+    "pdfUrl": "/certification/1785956697491_Coursera_P02K2SZUOEVC__1_.pdf",
+    "createdAt": 1785956702620
+  },
+  {
+    "id": "technical-support-fundamentals",
+    "title": "Technical Support Fundamentals",
+    "image": "/project-image/1785956457692_images.png",
+    "issueDate": "February 2026",
+    "skills": "Technical Support Engineering",
+    "pdfUrl": "/certification/1785956550406_Coursera_CLQ7H96QA7HG.pdf",
+    "createdAt": 1785956554428
+  },
+  {
+    "id": "aws-certified-ai-practitioner",
+    "title": "AWS Certified AI Practitioner",
+    "image": "/ethnus.jpg",
+    "issueDate": "July 2025",
+    "skills": "Amazon Web Services (AWS) · Machine Learning · Artificial Intelligence(AI)",
+    "pdfUrl": "/certification/ethnus.pdf"
+  },
+  {
+    "id": "aws-certified-machine-learning-natural-language-speciality",
+    "title": "AWS Certified Machine Learning - Natural Language Speciality",
+    "image": "/aws.png",
+    "issueDate": "June 2025",
+    "skills": "Amazon Web Services (AWS) · Machine Learning · Natural Language Processing (NLP) · AWS SageMaker",
+    "pdfUrl": "/certification/awsmachine.pdf"
+  },
+  {
+    "id": "aws-certified-machine-learning",
+    "title": "AWS Certified Machine Learning",
+    "image": "/aws.png",
+    "issueDate": "June 2025",
+    "skills": "Amazon Web Services (AWS) · Machine Learning · AWS SageMaker",
+    "pdfUrl": "/certification/awsml.pdf"
+  },
+  {
+    "id": "gen-ai-using-ibm-watsonx",
+    "title": "GEN AI using IBM Watsonx",
+    "image": "/ibm1.png",
+    "issueDate": "June 2025",
+    "skills": "Machine Learning · Artificial Intelligence (AI) · IBM Servers · IBM Watson · Gen Ai",
+    "pdfUrl": "/certification/gen.pdf"
+  },
+  {
+    "id": "aws-cloud-foundation",
+    "title": "AWS Cloud Foundation",
+    "image": "/aws.png",
+    "issueDate": "May 2025",
+    "skills": "Amazon Web Services (AWS) · Machine Learning · Natural Language Processing (NLP) · AWS SageMaker",
+    "pdfUrl": "/certification/foundation.pdf"
+  },
+  {
+    "id": "image-processing-with-python-pil",
+    "title": "Image Processing with Python PIL",
+    "image": "/udemy.jpg",
+    "issueDate": "Feb 2024",
+    "skills": "PIL · Python (Programming Language) · Image Processing",
+    "pdfUrl": "/certification/ude.pdf"
+  },
+  {
+    "id": "internet-and-web-development-fundamentals",
+    "title": "Internet And Web Development Fundamentals",
+    "image": "/udemy.jpg",
+    "issueDate": "Feb 2024",
+    "skills": "Internet Protocol (IP) · Back-End Web Development",
+    "pdfUrl": "/certification/ude1.pdf"
+  },
+  {
+    "id": "python-skill-test",
+    "title": "Python Skill Test",
+    "image": "/hacker.png",
+    "issueDate": "Feb 2024",
+    "skills": "Python (Programming Language)",
+    "pdfUrl": "/certification/hacker.pdf"
+  },
+  {
+    "id": "matlab-basic",
+    "title": "MATLAB basic",
+    "image": "/matlab.png",
+    "issueDate": "August 2023",
+    "skills": "Matlab",
+    "pdfUrl": "/certification/hacker.pdf"
+  }
+]
