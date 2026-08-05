@@ -1,0 +1,102 @@
+[
+  {
+    "id": "talentsync",
+    "title": "TalentSync",
+    "image": "/project-image/1785954143808_Screenshot_2026-08-05_235137.png",
+    "features": [
+      "TalentSync completely automates the top of the hiring funnel using state-of-the-art LLMs and Semantic Search.",
+      "Candidates drag-and-drop their resume. Gemini 2.5 Flash natively reads the PDF, extracts structured JSON data, and immediately initiates a pre-screening chat to assess their interest and salary expectations.",
+      "Recruiters paste a Job Description. Our vector database instantly performs a cosine similarity search against all candidates, returning ranked matches alongside AI-generated explanations of why they fit the role."
+    ],
+    "github": "https://github.com/Eaman006/TalentSync",
+    "website": "https://talent-sync-bice.vercel.app",
+    "createdAt": 1785954214073
+  },
+  {
+    "id": "turant",
+    "title": "Turant",
+    "image": "/project-image/1785953267515_Screenshot_2026-08-05_232742.png",
+    "features": [
+      "Turant provides instant, verified access to local daily needs across five distinct modules:",
+      "🚕 City Travel & Cabs: Find shared cabs and autos at affordable rates.",
+      "🏠 PG & Hotels: Compare rents, view room photos, and chat directly with landlords.",
+      "🍔 Restaurant: Browse daily menus from local dhabas, messes, and eateries.",
+      "🛒 Grocery (Kirana): Connect with nearby shops and send your list to check instant availability.",
+      "💊 Medical & Pharmacy: Upload your prescription for fast, reliable home delivery."
+    ],
+    "github": "https://github.com/Eaman006/Turant",
+    "website": "https://turant.vercel.app/",
+    "createdAt": 1785953354455
+  },
+  {
+    "id": "task-manager",
+    "title": "Task Manager",
+    "image": "/task-manager.png",
+    "features": [
+      "Effectively Plan your daily task and Goals.",
+      "Realtime Monitoring your Tasks.",
+      "Graph to keep track on your progress."
+    ],
+    "github": "https://github.com/Eaman006/Task-Manager.git",
+    "website": "https://task-manager-livid-phi.vercel.app/"
+  },
+  {
+    "id": "campus-navigator",
+    "title": "Campus Navigator",
+    "image": "/campus1.png",
+    "features": [
+      "🔍 Search for Directions – Get the best path between buildings and rooms.",
+      "🎙️ Voice-Based Navigation – Speak your query instead of typing.",
+      "🗺️ Dynamic Floor Maps – Interactive SVG-based maps for easy navigation.",
+      "📡 REST API Integration – Fetches real-time navigation paths from the backend."
+    ],
+    "github": "https://github.com/Eaman006/Campus-Navigator.git",
+    "website": "https://campus-navigator-five.vercel.app/"
+  },
+  {
+    "id": "url-flix",
+    "title": "Url Flix",
+    "image": "/url.png",
+    "features": [
+      "🔗Make short Url for free",
+      "🛜No signup Required"
+    ],
+    "github": "https://github.com/Eaman006/URLfix.git",
+    "website": "https://ur-lfix.vercel.app"
+  },
+  {
+    "id": "todo-app",
+    "title": "Todo App",
+    "image": "/todo.png",
+    "features": [
+      "🗃️Manage Your Todos very effectively",
+      "🎙️ Use voice Typing to save your Todos"
+    ],
+    "github": "https://github.com/Eaman006/TodoAPP.git",
+    "website": "https://todo-app-lac-phi-13.vercel.app/"
+  },
+  {
+    "id": "automatic-attendance-system",
+    "title": "Automatic Attendance System",
+    "image": "/attendance.png",
+    "features": [
+      "Build Using OpenCV and face_recognition in Python",
+      "Take Attendance precisely with date and time"
+    ],
+    "github": "https://github.com/Eaman006/AutomaticAttendanceSystem.git",
+    "website": ""
+  },
+  {
+    "id": "musico-player",
+    "title": "Musico Player",
+    "image": "/musico.png",
+    "features": [
+      "🔍 Search and Make playlist",
+      "🎙️ Clear High Quality Audio",
+      "🗺️ Stream music all over the world.",
+      "📡 Enjoy Ads free music for free"
+    ],
+    "github": "https://github.com/Eaman006/MusicoPlayer.git",
+    "website": "https://musico-player-sigma.vercel.app/"
+  }
+]
