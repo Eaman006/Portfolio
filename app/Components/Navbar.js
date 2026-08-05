@@ -6,7 +6,7 @@ import { IoMdHome } from "react-icons/io";
 import { RiComputerFill } from "react-icons/ri";
 import { MdFindInPage, MdMenu, MdClose } from "react-icons/md";
 import { IoCall } from "react-icons/io5";
-import { BsDatabaseFillGear } from "react-icons/bs";
+import { BsDatabaseFillGear, BsShieldLockFill } from "react-icons/bs";
 import { useLoader } from './Loader';
 
 const Navbar = () => {
@@ -88,6 +88,7 @@ const Navbar = () => {
         <Link href="/about" className={`${getActiveClass("/about")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><MdFindInPage /></span>About</Link>
         <Link href="/contact" className={`${getActiveClass("/contact")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><IoCall /></span>Contact me</Link>
         <Link href="/services" className={`${getActiveClass("/services")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><BsDatabaseFillGear /></span>Services</Link>
+        <Link href="/admin" className={`${getActiveClass("/admin")} flex gap-0.5`} onClick={handleLinkClick}><span className='m-1'><BsShieldLockFill /></span>Admin</Link>
       </div>
     </div>
   )

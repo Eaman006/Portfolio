@@ -1,8 +1,10 @@
 import React from 'react'
+import Link from 'next/link'
 import { FcCallback } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 import { SiGmail } from "react-icons/si";
+import { BsShieldLock } from "react-icons/bs";
 
 const Footer = () => {
   return (
@@ -34,6 +36,12 @@ const Footer = () => {
           <a href="mailto:eamanadeep006@gmail.com" className='hover:text-gray-300 transition-colors sm:hidden'>
             Email
           </a>
+        </div>
+        <div className='flex items-center border-l border-gray-800 pl-3'>
+          <span className='mr-1 text-sky-400'><BsShieldLock /></span>
+          <Link href="/admin" className='hover:text-sky-300 transition-colors text-sky-400/90 font-medium'>
+            Admin Portal
+          </Link>
         </div>
       </div>
     </div>
