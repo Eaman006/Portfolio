@@ -145,7 +145,7 @@ const page = () => {
           </div>
 
         </div>
-        <span class="material-symbols-outlined" style={{ fontSize: '48px' }}>
+        <span className="material-symbols-outlined" style={{ fontSize: '48px' }}>
           arrow_circle_right
         </span>
 
