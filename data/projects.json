@@ -1,5 +1,25 @@
 [
   {
+    "id": "factgate",
+    "title": "FactGate",
+    "image": "/project-image/1789411671231_Screenshot_2026-09-15_000717.png",
+    "features": [
+      "🔐 Multi-Tenant User Isolation & Firebase Auth: Secure Google Single Sign-On (SSO) with complete per-user database and state isolation (user_id scoping across all DB tables and localStorage).",
+      "📄 Automated PDF Ingestion & Parsing Pipeline: Ingests multi-page financial reports, legal contracts, and technical specifications, extracting text per page and storing raw text structures.",
+      "⚖️ Fact Verification & Relationship Matrices: Classifies cross-document relationships into four strict categories:",
+      "🟢 Corroborated: Multiple sources support the claim.",
+      "🔴 Contradicted: Sources materially disagree without explanation.",
+      "🔵 Context Resolved: Disagreements explained by period, scope, units, or geography.",
+      "🟡 Needs Review: Low confidence or ambiguous claims flagged for manual analyst review.",
+      "🎯 Direct Page-Jump Evidence Viewer: Built-in interactive document previewer allowing analysts to verify quotes instantly with direct page targeting.",
+      "📂 Workspace & Corpus Management: Create, rename, delete, and persist custom isolated workspaces (Acme Corp, Personal Workspace, etc.) stored dynamically per user.",
+      "🔍 Interactive Command Palette & Smart Filtering: Quick search modal (Cmd+K / Ctrl+K) for global entity, document, and fact lookups with real-time status filtering."
+    ],
+    "github": "https://github.com/Eaman006/FactGate",
+    "website": "https://fact-gate.vercel.app/",
+    "createdAt": 1789411715641
+  },
+  {
     "id": "talentsync",
     "title": "TalentSync",
     "image": "/project-image/1785954143808_Screenshot_2026-08-05_235137.png",
